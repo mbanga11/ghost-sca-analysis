@@ -13,3 +13,6 @@
 | trivy | 0.76.1 |
 | jq | 1.7.1 |
 | python | 3.13.5 |
+
+## Progress log
+- 2026-11-03: Generated old SBOM (v5.105.0) with Syft. 3,206 components: 3,170 npm, 26 GitHub, 10 with no package URL. Needs regenerating with --source-name/--source-version.
