@@ -31,3 +31,9 @@ Running list of report-worthy findings. Details and evidence are in methodology.
 - [ ] S7: express-brute@1.0.1 (brute-force protection) in both releases, GHSA-984p-xq9m-4rjw, no fix available. Flaw in a security control; remediation = replace the package. DEEP-DIVE CANDIDATE.
 - [ ] S8: Abandoned dependencies: 17 old-release findings have no fix (request, lodash.pick, lodash.template, html-minifier, dicer, ip, extract-zip, etc.). Only remediation is replacement.
 - Merge results: old 571 findings (565 both scanners, 6 single-scanner), latest 11 (all both). Matches Phase 3 manual analysis.
+
+## Added after Phase 4.2 enrichment
+- [ ] S9: vite@4.5.3 (old) CVE-2025-31125 is on CISA KEV (added 2026-01-22) with EPSS 0.749, highest of all findings, yet scanner severity is only MEDIUM. Related Vite CVE-2025-30208 (EPSS 0.748) and CVE-2025-31486 (0.405). Vite is dev tooling; risk depends on whether the dev server is network-exposed. TOP DEEP-DIVE CANDIDATE.
+- [ ] S10: Severity vs exploitability mismatch: none of the 27 CRITICAL old-release findings appear among the top-10 EPSS scores. Severity-only triage would bury the one KEV vulnerability.
+- [ ] S11: Latest v6.74.0: 0 KEV, all EPSS < 1% (max jsonwebtoken 0.8%). 2 findings (express-brute, @tiptap/core) have no EPSS because they only have GHSA IDs; no data is not the same as no risk.
+- Old release: 6 findings with EPSS >= 10% (3x vite, decode-uri-component, lodash.template, moment).

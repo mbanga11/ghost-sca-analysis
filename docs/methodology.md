@@ -48,3 +48,8 @@
 - scripts/merge_scans.py reads all 4 scan files, groups findings by package@version, and joins records that share any ID (CVE or GHSA aliases), so no manual ID mapping is needed. Never deduplicates on CVE alone.
 - Keeps per-tool evidence: both severities, scanners, max CVSS v3, fix version, lockfile, PURL. Adds a review column (single scanner, severity mismatch, legacy NSWG ID, no fix).
 - Output: analysis/findings.csv, 582 rows (old 571, latest 11). Result matches the Phase 3 manual cross-check (565 + 3 + 3 for old).
+
+## Enrichment (2026-11-05)
+- scripts/enrich.py adds EPSS (FIRST API, scores dated per row in epss_date) and CISA KEV status (catalog 2026.11.04, 1,768 entries). Raw responses saved to analysis/enrichment/ for reproducibility.
+- 384 unique CVEs across 582 findings; EPSS found for 383. Findings with only GHSA/NSWG IDs have no EPSS (latest: 2, old: 53).
+- A finding takes the max EPSS of its CVE aliases; KEV = yes if any alias is in the catalog.
