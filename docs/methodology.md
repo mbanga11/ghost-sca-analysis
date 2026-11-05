@@ -38,3 +38,5 @@
 - ID normalization: Grype reports GHSA IDs, Trivy reports CVE IDs. After mapping GHSA to related CVE, agreement is 565/568 (old) and 11/11 (latest).
 - Differences: Grype-only actions/download-artifact@v4 (GitHub Action), google-caja-bower (git dep), deepmerge CVE; Trivy-only bl/minimatch (legacy NSWG IDs), toml CVE. Severity disagreement: semver@2.3.2 CVE-2015-8855 (Grype HIGH, Trivy MEDIUM).
 - Grype prompted an update to 0.121.2; kept 0.121.1 so both releases are scanned with the same version.
+- NSWG check: Trivy-only bl@0.8.2 (NSWG-ECO-391) and minimatch@0.3.0 (NSWG-ECO-118) are legacy Node Security WG records; both tools already report the same CVEs on those package versions, so these are duplicates, not extra vulnerabilities. Net scanner agreement is effectively complete.
+- NSWG check: Trivy-only bl@0.8.2 (NSWG-ECO-391) and minimatch@0.3.0 (NSWG-ECO-118) are legacy Node Security WG records; both tools already report the same CVEs on those package versions, so these are duplicates, not extra vulnerabilities. Net scanner agreement is effectively complete.
