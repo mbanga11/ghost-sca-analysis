@@ -39,3 +39,7 @@
 - Differences: Grype-only actions/download-artifact@v4 (GitHub Action), google-caja-bower (git dep), deepmerge CVE; Trivy-only bl/minimatch (legacy NSWG IDs), toml CVE. Severity disagreement: semver@2.3.2 CVE-2015-8855 (Grype HIGH, Trivy MEDIUM).
 - Grype prompted an update to 0.121.2; kept 0.121.1 so both releases are scanned with the same version.
 - NSWG check: Trivy-only bl@0.8.2 (NSWG-ECO-391) and minimatch@0.3.0 (NSWG-ECO-118) are legacy Node Security WG records; both tools already report the same CVEs on those package versions, so these are duplicates, not extra vulnerabilities. Net scanner agreement is effectively complete.
+
+## Side finding: committed private key (2026-11-05)
+- v5.105.0 contains ghost/identity-token-service/private.pem (PKCS#8 "BEGIN PRIVATE KEY"), flagged by Trivy secret scanning. Not referenced by name in the service's src or test code; README does not mention it. Absent from v6.74.0 (no private.pem anywhere in the repo).
+- Assessment: low risk, likely an unused development leftover. Caveats: the key remains retrievable from git history, and code review alone cannot prove it was never used outside the repo. Recommendation: treat committed keys as exposed and rotate if ever used; add secret scanning to CI.
