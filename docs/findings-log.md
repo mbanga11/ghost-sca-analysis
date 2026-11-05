@@ -25,3 +25,9 @@ Running list of report-worthy findings. Details and evidence are in methodology.
 ## Open checks
 - [ ] Node.js 22.23.4 runtime vulnerabilities (S5)
 - [ ] Decide whether to file the Syft bug report (T1)
+
+## Added after Phase 4.1 merge
+- [ ] S6: jsonwebtoken@8.5.1 still in v6.74.0 with 3 CVEs from 2022 (CVE-2022-23539/23540/23541), fix 9.0.0. Persistent ~4 years. Exploitability depends on how Ghost calls jwt.verify. DEEP-DIVE CANDIDATE.
+- [ ] S7: express-brute@1.0.1 (brute-force protection) in both releases, GHSA-984p-xq9m-4rjw, no fix available. Flaw in a security control; remediation = replace the package. DEEP-DIVE CANDIDATE.
+- [ ] S8: Abandoned dependencies: 17 old-release findings have no fix (request, lodash.pick, lodash.template, html-minifier, dicer, ip, extract-zip, etc.). Only remediation is replacement.
+- Merge results: old 571 findings (565 both scanners, 6 single-scanner), latest 11 (all both). Matches Phase 3 manual analysis.
