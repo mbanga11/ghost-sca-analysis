@@ -43,3 +43,8 @@
 ## Side finding: committed private key (2026-11-05)
 - v5.105.0 contains ghost/identity-token-service/private.pem (PKCS#8 "BEGIN PRIVATE KEY"), flagged by Trivy secret scanning. Not referenced by name in the service's src or test code; README does not mention it. Absent from v6.74.0 (no private.pem anywhere in the repo).
 - Assessment: low risk, likely an unused development leftover. Caveats: the key remains retrievable from git history, and code review alone cannot prove it was never used outside the repo. Recommendation: treat committed keys as exposed and rotate if ever used; add secret scanning to CI.
+
+## Merge and normalize (2026-11-05)
+- scripts/merge_scans.py reads all 4 scan files, groups findings by package@version, and joins records that share any ID (CVE or GHSA aliases), so no manual ID mapping is needed. Never deduplicates on CVE alone.
+- Keeps per-tool evidence: both severities, scanners, max CVSS v3, fix version, lockfile, PURL. Adds a review column (single scanner, severity mismatch, legacy NSWG ID, no fix).
+- Output: analysis/findings.csv, 582 rows (old 571, latest 11). Result matches the Phase 3 manual cross-check (565 + 3 + 3 for old).
