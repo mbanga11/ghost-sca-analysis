@@ -29,3 +29,12 @@
 - Conclusion: both SBOMs are complete for third-party npm dependencies and built with identical scope.
 - Reproduce: export SYFT_JAVASCRIPT_INCLUDE_DEV_DEPENDENCIES=true before running Syft.
 - Side finding: Trivy flagged ghost/identity-token-service/private.pem (committed private key file). To check whether it is a test key.
+
+## Vulnerability scanning (2026-11-05)
+- Grype 0.121.1, DB schema v6.1.10 built 2026-11-05T06:21Z. Trivy 0.76.1, DB v2 updated 2026-11-05T19:01Z. Both scanners run on the same verified Syft SBOMs so differences reflect the scanners, not the inventory.
+- Old (v5.105.0): 568 matches, 424 unique IDs (both tools). Grype severity: 27 critical, 268 high, 211 medium, 62 low; 549 with a fix available, 19 without.
+- Latest (v6.74.0): 11 matches, 8 unique IDs (both tools). Grype severity: 0 critical, 1 high, 9 medium, 1 low; 10 fixable, 1 not.
+- Old release scanned with a 2026 database = retrospective analysis; many findings were disclosed after Dec 2024.
+- ID normalization: Grype reports GHSA IDs, Trivy reports CVE IDs. After mapping GHSA to related CVE, agreement is 565/568 (old) and 11/11 (latest).
+- Differences: Grype-only actions/download-artifact@v4 (GitHub Action), google-caja-bower (git dep), deepmerge CVE; Trivy-only bl/minimatch (legacy NSWG IDs), toml CVE. Severity disagreement: semver@2.3.2 CVE-2015-8855 (Grype HIGH, Trivy MEDIUM).
+- Grype prompted an update to 0.121.2; kept 0.121.1 so both releases are scanned with the same version.
