@@ -60,3 +60,11 @@
 - Server workspace differs by release: ghost/core in v5.105.0, ghost in v6.74.0 (Ghost restructured; verified via ghost/package.json name "ghost" and index.js). First run missed this (sanity check printed "server root present: False"); fixed with a per-release mapping.
 - Limitation: tags follow manifest sections, not actual code use. Example: vite is listed under app dependencies so it is tagged frontend-runtime, but it is a build tool. "server-runtime" means installed with the server, not proven to be called. Verified manually for deep-dive findings in Phase 5.
 - Results: latest 8 server-runtime, 1 frontend-runtime, 2 dev-tooling. Old 341 server-runtime, 47 frontend-runtime, 157 frontend-dev-or-build, 25 dev-tooling, 1 ci-pipeline.
+
+## Reproducing the analysis
+Run from the repo root, in this order (each step adds columns to analysis/findings.csv; rerunning merge_scans.py alone rebuilds the file and drops enrichment and tags):
+1. export SYFT_JAVASCRIPT_INCLUDE_DEV_DEPENDENCIES=true, then generate SBOMs (see SBOM sections above)
+2. Grype and Trivy scans into scans/
+3. python3 scripts/merge_scans.py
+4. python3 scripts/enrich.py   (needs internet; EPSS/KEV values change daily, raw copies in analysis/enrichment/)
+5. python3 scripts/tag_components.py   (reads ~/Projects/ghost-source via git; no checkout needed)

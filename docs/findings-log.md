@@ -7,7 +7,7 @@ Running list of report-worthy findings. Details and evidence are in methodology.
 - [ ] S2: Ghost migrated Yarn to pnpm between releases; comparisons account for lockfile format.
 - [ ] S3: CI/CD supply chain: GitHub Actions grew from 26 to 78. In v5.105.0 only 1 of 26 pinned to a commit SHA, several pinned to branch `main`. actions/download-artifact@v4 has a known advisory (GHSA-cxww-7g56-2vh6). actions/upload-artifact v3 (deprecated) in use.
 - [ ] S4: Committed private key (ghost/identity-token-service/private.pem) in v5.105.0, removed by v6.74.0. Low risk, still in git history.
-- [ ] S5: Node.js runtime pinned at 22.23.4 in v6.74.0. PENDING: manual check against Node security releases.
+- [ ] S5: Node.js runtime pinned at 22.23.4 in v6.74.0. DONE: see Node.js runtime check below (fully patched; 22.x EOL 2027-04-30).
 
 ## Tooling / methodology findings
 - [ ] T1: Syft 1.56.0 drops the entire pnpm lockfile when it hits a `node@runtime` entry (`type: variations`). Found by bisection. Candidate upstream bug report.
@@ -18,12 +18,13 @@ Running list of report-worthy findings. Details and evidence are in methodology.
 
 ## Deep-dive candidates (Phase 5)
 - [ ] minimatch@0.3.0: 5 HIGH findings on a very old version. Likely "scanner High, real risk Low."
-- [ ] The 1 HIGH finding in v6.74.0
-- [ ] The 1 not-fixed finding in v6.74.0
+- [ ] vite@4.5.3 (old): KEV + EPSS 0.75, tagged frontend-runtime but likely build-only (S9, S12)
+- [ ] jsonwebtoken@8.5.1 (latest): direct server dependency, 3 CVEs since 2022 (S6)
+- [ ] express-brute@1.0.1 (latest): direct server dependency, security control, no fix (S7)
 - [ ] Pick from the 27 criticals in v5.105.0
 
 ## Open checks
-- [ ] Node.js 22.23.4 runtime vulnerabilities (S5)
+- [x] Node.js 22.23.4 runtime vulnerabilities (S5): done
 - [ ] Decide whether to file the Syft bug report (T1)
 
 ## Added after Phase 4.1 merge
