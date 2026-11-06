@@ -42,3 +42,6 @@ Running list of report-worthy findings. Details and evidence are in methodology.
 - [ ] S6/S7 strengthened: jsonwebtoken@8.5.1 and express-brute@1.0.1 are DIRECT dependencies of the server workspace (ghost) in v6.74.0, not transitive or dev-only.
 - [ ] S12: Automated tagging limits: vite@4.5.3 is tagged frontend-runtime because Ghost's admin apps list it under dependencies, but Vite is a build tool. Manifests do not equal runtime. Verify in the vite deep dive.
 - Old release: 341 of 571 findings are in server-runtime dependencies (installed with the server; reachability not yet verified).
+
+## Node.js runtime check (2026-11-05)
+- [ ] S5 result: Ghost v6.74.0 pins Node.js 22.23.4 via pnpm runtime. Newest 22.x: [VERSION]. Security releases after 22.23.4: [NONE / list CVEs]. 22.x support status: [Active LTS / Maintenance / EOL on DATE]. Source: nodejs.org/en/blog/vulnerability, checked 2026-11-05.
