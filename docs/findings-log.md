@@ -44,4 +44,4 @@ Running list of report-worthy findings. Details and evidence are in methodology.
 - Old release: 341 of 571 findings are in server-runtime dependencies (installed with the server; reachability not yet verified).
 
 ## Node.js runtime check (2026-11-05)
-- [ ] S5 result: Ghost v6.74.0 pins Node.js 22.23.4 via pnpm runtime. Newest 22.x: [VERSION]. Security releases after 22.23.4: [NONE / list CVEs]. 22.x support status: [Active LTS / Maintenance / EOL on DATE]. Source: nodejs.org/en/blog/vulnerability, checked 2026-11-05.
+- [ ] S5 result: Ghost v6.74.0 pins Node.js 22.23.4 via pnpm runtime. 22.23.4 (2026-10-21) is itself a security release (Oct 2026 round, 10 CVEs across 22/24/26) and is the newest 22.x as of 2026-11-05, so the pinned runtime is fully patched. 22.x is Maintenance LTS until 2027-04-30 (EOL in ~6 months); recommend planning a move to Node 24. Sources: nodejs.org/en/blog/release/v22.23.4, nodejs.org/en/blog/release, checked 2026-11-05.
