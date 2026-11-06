@@ -53,3 +53,10 @@
 - scripts/enrich.py adds EPSS (FIRST API, scores dated per row in epss_date) and CISA KEV status (catalog 2026.11.04, 1,768 entries). Raw responses saved to analysis/enrichment/ for reproducibility.
 - 384 unique CVEs across 582 findings; EPSS found for 383. Findings with only GHSA/NSWG IDs have no EPSS (latest: 2, old: 53).
 - A finding takes the max EPSS of its CVE aliases; KEV = yes if any alias is in the catalog.
+
+## Component tagging (2026-11-05)
+- scripts/tag_components.py reads workspace package.json files and lockfiles directly from git (git show TAG:path, no checkout), builds a dependency graph, and walks it from each workspace.
+- Categories: server-runtime (reachable from the server workspace's dependencies/optionalDependencies), frontend-runtime (apps/* or ghost/admin production deps), frontend-dev-or-build (frontend devDependencies: bundled or build tool, needs manual check), dev-tooling (reachable only from other workspaces/dev deps), ci-pipeline (GitHub Actions), unknown. dep_type = direct if any workspace declares it, else transitive. reached_from lists the workspaces that pull it in.
+- Server workspace differs by release: ghost/core in v5.105.0, ghost in v6.74.0 (Ghost restructured; verified via ghost/package.json name "ghost" and index.js). First run missed this (sanity check printed "server root present: False"); fixed with a per-release mapping.
+- Limitation: tags follow manifest sections, not actual code use. Example: vite is listed under app dependencies so it is tagged frontend-runtime, but it is a build tool. "server-runtime" means installed with the server, not proven to be called. Verified manually for deep-dive findings in Phase 5.
+- Results: latest 8 server-runtime, 1 frontend-runtime, 2 dev-tooling. Old 341 server-runtime, 47 frontend-runtime, 157 frontend-dev-or-build, 25 dev-tooling, 1 ci-pipeline.

@@ -37,3 +37,8 @@ Running list of report-worthy findings. Details and evidence are in methodology.
 - [ ] S10: Severity vs exploitability mismatch: none of the 27 CRITICAL old-release findings appear among the top-10 EPSS scores. Severity-only triage would bury the one KEV vulnerability.
 - [ ] S11: Latest v6.74.0: 0 KEV, all EPSS < 1% (max jsonwebtoken 0.8%). 2 findings (express-brute, @tiptap/core) have no EPSS because they only have GHSA IDs; no data is not the same as no risk.
 - Old release: 6 findings with EPSS >= 10% (3x vite, decode-uri-component, lodash.template, moment).
+
+## Added after Phase 4.3 component tagging
+- [ ] S6/S7 strengthened: jsonwebtoken@8.5.1 and express-brute@1.0.1 are DIRECT dependencies of the server workspace (ghost) in v6.74.0, not transitive or dev-only.
+- [ ] S12: Automated tagging limits: vite@4.5.3 is tagged frontend-runtime because Ghost's admin apps list it under dependencies, but Vite is a build tool. Manifests do not equal runtime. Verify in the vite deep dive.
+- Old release: 341 of 571 findings are in server-runtime dependencies (installed with the server; reachability not yet verified).
