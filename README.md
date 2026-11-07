@@ -39,9 +39,7 @@ Severity, EPSS, and KEV tell you what's dangerous in general. Reachability tells
 - v6.74.0 pins Node.js 22.23.4, which is fully patched, but Node 22 reaches end of life on 2027-04-30.
 
 **Tooling**
-- **Syft silently drops Ghost's entire pnpm lockfile.** I bisected it to a single `node@runtime` entry with a nested `type: variations` resolution. Without a workaround, Syft reports 136 packages instead of ~2,787.
-
-> **Reported upstream:** [anchore/syft#5544](https://github.com/anchore/syft/issues/5544). This is the Syft pnpm parser bug: a lockfile document with a `node@runtime` entry (`resolution: type: variations`) is silently dropped. It still happens in Syft 1.57.0. A minimal repro is in [`docs/syft-repro/`](docs/syft-repro/).
+- **Syft silently drops Ghost's entire pnpm lockfile.** I bisected it to a single `node@runtime` entry with a nested `type: variations` resolution. Without a workaround, Syft reports 136 packages instead of ~2,787. Reported upstream as [anchore/syft#5544](https://github.com/anchore/syft/issues/5544); minimal repro in [`docs/syft-repro/`](docs/syft-repro/).
 - Syft excludes Yarn dev dependencies by default (3,170 missing packages) but not pnpm ones.
 - Grype reports GHSA IDs and Trivy reports CVE IDs for the same issues. After normalizing, the scanners agree on 565/568 (old) and 11/11 (current).
 
