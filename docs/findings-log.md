@@ -55,3 +55,4 @@ Running list of report-worthy findings. Details and evidence are in methodology.
 ## Deep dive results
 - [x] vite@4.5.3 (old): DONE. Rubric P0 -> override P3. Build/dev tool only; KEV-family CVEs need the dev server exposed via --host/server.host, which Ghost does not configure (0.0.0.0 set only on preview servers in 5 apps). Patches existed in 4.x (4.5.10-4.5.14); resolved in v6.74.0 (vite 8.1.6). Best example of "KEV does not mean urgent for this project." Details: analysis/deep-dives/vite.md
 - [ ] TODO before publishing: confirm CVE-2025-31125 and CVE-2025-31486 advisories state the same dev-server exposure condition.
+- [x] jsonwebtoken@8.5.1 (latest): DONE. Rubric P1/P2 -> override P3. All 4 verify paths use explicit algorithms (HS256/RS512), keys never falsy, RSA >= 2048 enforced. express-jwt bundles patched jsonwebtoken 9.0.3, so Ghost ships 8.5.1 and 9.0.3 side by side. Recommend upgrading the exact pin to 9.x. Details: analysis/deep-dives/jsonwebtoken.md
