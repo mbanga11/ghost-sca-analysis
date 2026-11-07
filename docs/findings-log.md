@@ -51,3 +51,7 @@ Running list of report-worthy findings. Details and evidence are in methodology.
 - [ ] S13: Funnel: 582 findings -> 48 P0/P1 overall -> 1 P1 in the current release (jsonwebtoken CVE-2022-23539). Core headline.
 - [ ] S14: Old-release P1s cluster in security-relevant server packages: multer (file uploads, 10 CVEs), handlebars (theme engine, 4 critical), nodemailer, body-parser, form-data. Retrospective; check which persist in latest (Phase 7).
 - [ ] S15: @faker-js/faker tagged as a direct server dependency in old release; faker is a test-data library. Likely mis-declared in a manifest. Override candidate.
+
+## Deep dive results
+- [x] vite@4.5.3 (old): DONE. Rubric P0 -> override P3. Build/dev tool only; KEV-family CVEs need the dev server exposed via --host/server.host, which Ghost does not configure (0.0.0.0 set only on preview servers in 5 apps). Patches existed in 4.x (4.5.10-4.5.14); resolved in v6.74.0 (vite 8.1.6). Best example of "KEV does not mean urgent for this project." Details: analysis/deep-dives/vite.md
+- [ ] TODO before publishing: confirm CVE-2025-31125 and CVE-2025-31486 advisories state the same dev-server exposure condition.
