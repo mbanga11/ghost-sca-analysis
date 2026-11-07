@@ -57,3 +57,9 @@ Running list of report-worthy findings. Details and evidence are in methodology.
 - [x] Confirmed: CVE-2025-31125 and CVE-2025-31486 advisories state the same dev-server exposure condition (--host / server.host). 31486's .svg bypass needs Vite 6.0+, so only its relative-path bypass applied to 4.5.3.
 - [x] jsonwebtoken@8.5.1 (latest): DONE. Rubric P1/P2 -> override P3. All 4 verify paths use explicit algorithms (HS256/RS512), keys never falsy, RSA >= 2048 enforced. express-jwt bundles patched jsonwebtoken 9.0.3, so Ghost ships 8.5.1 and 9.0.3 side by side. Recommend upgrading the exact pin to 9.x. Details: analysis/deep-dives/jsonwebtoken.md
 - [x] express-brute@1.0.1 (latest): DONE. Rubric P2 CONFIRMED. Reachable on staff login, reset, member sign-in and verification-code endpoints (18 limiters, DB-backed via brute-knex). No patch exists; race is in express-brute's read-then-write logic. Mitigated by tight limits, long lockouts, and staff device verification on by default. Remediation: replace the library. Details: analysis/deep-dives/express-brute.md
+
+### T1 update: Syft pnpm bug reported upstream
+- Issue: [anchore/syft#5544](https://github.com/anchore/syft/issues/5544)
+- One bug, not two: the two-document format parses fine. Only the YAML document containing the `node@runtime` entry is dropped.
+- Still happens in Syft 1.57.0 (and 1.56.0). The error shows up only in JSON `files[].unknowns`.
+- Minimal 30-line repro: `docs/syft-repro/pnpm-lock.yaml` (returns 0 packages with the runtime entry, 1 without it).

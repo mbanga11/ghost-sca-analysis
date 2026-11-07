@@ -84,3 +84,5 @@ Scanner databases were pulled on 2026-11-05; results will drift as new advisorie
 ## Disclaimer
 
 Independent project, not affiliated with the Ghost Foundation. Every vulnerability here is a publicly known advisory; no new vulnerabilities in Ghost are disclosed.
+
+> **Reported upstream:** [anchore/syft#5544](https://github.com/anchore/syft/issues/5544). This is the Syft pnpm parser bug: a lockfile document with a `node@runtime` entry (`resolution: type: variations`) is silently dropped. It still happens in Syft 1.57.0. A minimal repro is in [`docs/syft-repro/`](docs/syft-repro/).

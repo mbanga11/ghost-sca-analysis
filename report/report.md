@@ -74,6 +74,8 @@ None of the old release's 27 critical findings appear in its top 10 by EPSS. The
 
 ## 6. Tooling findings
 
+> **Reported upstream:** [anchore/syft#5544](https://github.com/anchore/syft/issues/5544). This is the Syft pnpm parser bug: a lockfile document with a `node@runtime` entry (`resolution: type: variations`) is silently dropped. It still happens in Syft 1.57.0. A minimal repro is in [`docs/syft-repro/`](../docs/syft-repro/).
+
 - **Syft and pnpm.** Ghost's pnpm-lock.yaml contains two YAML documents, and Syft 1.56.0 returned 136 packages instead of ~2,787. Bisecting the lockfile isolated a single `node@runtime` entry with a nested `type: variations` resolution that makes Syft discard the whole file. Removing those entries fixed it. This is a candidate bug report for anchore/syft.
 - **Dev dependency handling.** Syft excluded 3,170 Yarn dev dependencies by default but included pnpm ones. Setting SYFT_JAVASCRIPT_INCLUDE_DEV_DEPENDENCIES=true made both consistent.
 - **ID normalization.** Grype reports GHSA IDs and Trivy reports CVE IDs for the same issues, so naive comparison would show large disagreement that isn't real.
