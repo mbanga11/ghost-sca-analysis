@@ -68,3 +68,8 @@ Run from the repo root, in this order (each step adds columns to analysis/findin
 3. python3 scripts/merge_scans.py
 4. python3 scripts/enrich.py   (needs internet; EPSS/KEV values change daily, raw copies in analysis/enrichment/)
 5. python3 scripts/tag_components.py   (reads ~/Projects/ghost-source via git; no checkout needed)
+
+## Prioritization (2026-11-07)
+- Rubric in docs/rubric.md (9 ordered rules, first match wins). Applied by scripts/prioritize.py; manual overrides in analysis/overrides.csv. Columns: priority (final), priority_rule (rubric result), priority_reason.
+- Pipeline step 6: python3 scripts/prioritize.py (after tag_components.py).
+- Results (no overrides yet): latest P0 0, P1 1, P2 4, P3 6, Review 0. Old P0 1 (vite), P1 47, P2 211, P3 310, Review 2 (NSWG duplicates).

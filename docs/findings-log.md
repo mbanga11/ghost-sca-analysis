@@ -46,3 +46,8 @@ Running list of report-worthy findings. Details and evidence are in methodology.
 
 ## Node.js runtime check (2026-11-05)
 - [ ] S5 result: Ghost v6.74.0 pins Node.js 22.23.4 via pnpm runtime. 22.23.4 (2026-10-21) is itself a security release (Oct 2026 round, 10 CVEs across 22/24/26) and is the newest 22.x as of 2026-11-05, so the pinned runtime is fully patched. 22.x is Maintenance LTS until 2027-04-30 (EOL in ~6 months); recommend planning a move to Node 24. Sources: nodejs.org/en/blog/release/v22.23.4, nodejs.org/en/blog/release, checked 2026-11-05.
+
+## Added after Phase 5.1 prioritization
+- [ ] S13: Funnel: 582 findings -> 48 P0/P1 overall -> 1 P1 in the current release (jsonwebtoken CVE-2022-23539). Core headline.
+- [ ] S14: Old-release P1s cluster in security-relevant server packages: multer (file uploads, 10 CVEs), handlebars (theme engine, 4 critical), nodemailer, body-parser, form-data. Retrospective; check which persist in latest (Phase 7).
+- [ ] S15: @faker-js/faker tagged as a direct server dependency in old release; faker is a test-data library. Likely mis-declared in a manifest. Override candidate.
