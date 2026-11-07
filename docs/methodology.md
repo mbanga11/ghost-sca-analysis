@@ -41,7 +41,7 @@
 - NSWG check: Trivy-only bl@0.8.2 (NSWG-ECO-391) and minimatch@0.3.0 (NSWG-ECO-118) are legacy Node Security WG records; both tools already report the same CVEs on those package versions, so these are duplicates, not extra vulnerabilities. Net scanner agreement is effectively complete.
 
 ## Side finding: committed private key (2026-11-05)
-- v5.105.0 contains ghost/identity-token-service/private.pem (PKCS#8 "BEGIN PRIVATE KEY"), flagged by Trivy secret scanning. Not referenced by name in the service's src or test code; README does not mention it. Absent from v6.74.0 (no private.pem anywhere in the repo).
+- v5.105.0 contains ghost/identity-token-service/private.pem (a PKCS#8 private key), flagged by Trivy secret scanning. Not referenced by name in the service's src or test code; README does not mention it. Absent from v6.74.0 (no private.pem anywhere in the repo).
 - Assessment: low risk, likely an unused development leftover. Caveats: the key remains retrievable from git history, and code review alone cannot prove it was never used outside the repo. Recommendation: treat committed keys as exposed and rotate if ever used; add secret scanning to CI.
 
 ## Merge and normalize (2026-11-05)
@@ -73,3 +73,6 @@ Run from the repo root, in this order (each step adds columns to analysis/findin
 - Rubric in docs/rubric.md (9 ordered rules, first match wins). Applied by scripts/prioritize.py; manual overrides in analysis/overrides.csv. Columns: priority (final), priority_rule (rubric result), priority_reason.
 - Pipeline step 6: python3 scripts/prioritize.py (after tag_components.py).
 - Results (no overrides yet): latest P0 0, P1 1, P2 4, P3 6, Review 0. Old P0 1 (vite), P1 47, P2 211, P3 310, Review 2 (NSWG duplicates).
+
+## Charts (2026-11-07)
+- Pipeline step 7: python3 scripts/make_charts.py -> charts/ (sbom_size, severity_by_release, priority_before_after, epss_vs_severity). Requires matplotlib.
