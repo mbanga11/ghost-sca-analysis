@@ -40,6 +40,8 @@ Severity, EPSS, and KEV tell you what's dangerous in general. Reachability tells
 
 **Tooling**
 - **Syft silently drops Ghost's entire pnpm lockfile.** I bisected it to a single `node@runtime` entry with a nested `type: variations` resolution. Without a workaround, Syft reports 136 packages instead of ~2,787.
+
+> **Reported upstream:** [anchore/syft#5544](https://github.com/anchore/syft/issues/5544). This is the Syft pnpm parser bug: a lockfile document with a `node@runtime` entry (`resolution: type: variations`) is silently dropped. It still happens in Syft 1.57.0. A minimal repro is in [`docs/syft-repro/`](docs/syft-repro/).
 - Syft excludes Yarn dev dependencies by default (3,170 missing packages) but not pnpm ones.
 - Grype reports GHSA IDs and Trivy reports CVE IDs for the same issues. After normalizing, the scanners agree on 565/568 (old) and 11/11 (current).
 
@@ -84,5 +86,3 @@ Scanner databases were pulled on 2026-11-05; results will drift as new advisorie
 ## Disclaimer
 
 Independent project, not affiliated with the Ghost Foundation. Every vulnerability here is a publicly known advisory; no new vulnerabilities in Ghost are disclosed.
-
-> **Reported upstream:** [anchore/syft#5544](https://github.com/anchore/syft/issues/5544). This is the Syft pnpm parser bug: a lockfile document with a `node@runtime` entry (`resolution: type: variations`) is silently dropped. It still happens in Syft 1.57.0. A minimal repro is in [`docs/syft-repro/`](docs/syft-repro/).
