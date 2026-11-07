@@ -1,36 +1,39 @@
 # Deep dive: express-brute@1.0.1 (Ghost v6.74.0, also in v5.105.0)
 
-**Scanner view:** GHSA-984p-xq9m-4rjw, MEDIUM (CVSS 5.6, AC:H). Every version affected; no fixed version exists. No CVE, so no EPSS; not on KEV.
+**Scanner view:** GHSA-984p-xq9m-4rjw, MEDIUM (CVSS 5.6, AC:H). Every version is affected and no fixed version exists. There's no CVE, so there's no EPSS score, and it's not on KEV.
 **Rubric result:** P2 (MEDIUM in a direct server dependency).
-**Final priority:** P2 (confirmed by deep dive).
+**Final priority:** P2 (confirmed by this deep dive).
 
 ## 1. What is it?
-express-brute is brute-force protection middleware. Per the advisory, concurrent requests can race and be counted incorrectly, so an attacker who sends many requests at the same moment can get more attempts than the configured limit before being locked out.
+express-brute is middleware that limits how many times someone can try things like logging in. According to the advisory, requests that arrive at the same moment can race each other and get miscounted. So an attacker who fires a burst of simultaneous requests can sneak in more attempts than the limit allows before getting locked out.
 
 ## 2. Where is it in Ghost?
-All usage is in ghost/core/server/web/shared/middleware/api/spam-prevention.js: 18 limiters configured from the "spam" section of ghost/core/shared/config/defaults.json. Security-sensitive ones:
+Everything lives in ghost/core/server/web/shared/middleware/api/spam-prevention.js, which sets up 18 limiters using the "spam" section of ghost/core/shared/config/defaults.json. The security-sensitive ones:
 | Limiter | Protects | Default |
 | --- | --- | --- |
-| user_login | staff/admin login | 4 free retries, then lockout from 10 min growing to 7 days |
-| user_reset, global_reset | password reset | 4 retries, then 1 hour |
-| user_verification, send_verification_code, otc_verification | verification / one-time codes | 4 retries, then 1 hour |
-| member_login, otc_verification_enumeration | member sign-in, account probing | 8 retries, then 10 min up to 12 hours |
-The rest (global_block, private_block, content_api_key, checkout, webmentions, upgrade, invites, email preview, support) are abuse/cost controls.
-Counters are stored in the database via @tryghost/brute-knex (table "brute").
+| user_login | staff/admin login | 4 free tries, then a lockout that starts at 10 min and grows to 7 days |
+| user_reset, global_reset | password reset | 4 tries, then 1 hour |
+| user_verification, send_verification_code, otc_verification | verification and one-time codes | 4 tries, then 1 hour |
+| member_login, otc_verification_enumeration | member sign-in, account probing | 8 tries, then 10 min up to 12 hours |
+The rest (global_block, private_block, content_api_key, checkout, webmentions, upgrade, invites, email preview, support) are for stopping spam and abuse.
+Attempt counts are stored in Ghost's database through @tryghost/brute-knex (table "brute").
 
 ## 3. Can it be reached?
-Yes. The limiters sit directly in front of internet-facing login, reset and verification endpoints. The race is in express-brute's own read-then-write logic, so a database-backed store does not prevent it.
+Yes. These limiters sit right in front of login, password reset, and verification endpoints that anyone on the internet can hit. The race is inside express-brute's own logic, which reads the count and then writes it in two separate steps. Storing the count in a database doesn't make those steps happen together, so it doesn't prevent the race.
 
 ## 4. How likely is exploitation?
-Moderate in principle, low in impact. AC:H: it requires tightly timed concurrent requests, and the counter still catches up, so the attacker gains some extra guesses per lockout window rather than unlimited attempts.
+Possible in principle, but with limited payoff. AC:H means it takes precisely timed simultaneous requests, and the counter still catches up afterward. The attacker gets some extra guesses per lockout window, not unlimited ones.
 
 ## 5. Rating and why
-P2. The vulnerable behavior is reachable on authentication endpoints and cannot be patched, but impact is bounded by tight limits and long lockouts, and staff accounts have a second factor: staff device verification is enabled by default in production (defaults.json "staffDeviceVerification": true; disabled only in development/testing configs), and guessing that code is separately rate-limited.
+P2. The vulnerable behavior is reachable on login endpoints and there's no patch. But the damage is limited by tight limits and long lockouts, and staff accounts have a second layer: staff device verification is on by default in production (defaults.json "staffDeviceVerification": true; it's only turned off in development and testing configs), and guessing that code has its own rate limit.
 
 ## 6. Fix
-No patched version exists, so remediation means replacing express-brute with a maintained limiter that uses atomic counters (for example an atomic increment in the database or Redis). Short term: keep staff device verification enabled, enforce strong passwords, and consider an upstream rate limit (reverse proxy / WAF) on login and verification routes.
+Since there's no patched version, the real fix is replacing express-brute with a maintained rate limiter that uses atomic counters (for example, an atomic increment in the database or Redis). In the meantime: keep staff device verification on, enforce strong passwords, and consider adding rate limiting at the reverse proxy or WAF for login and verification routes.
 
 ## 7. Limitations
-- Did not verify whether @tryghost/brute-knex implements atomic increments; conclusion rests on express-brute's documented read-then-write behavior.
-- Self-hosters can disable staffDeviceVerification in config, which would remove the second-factor mitigation.
-- No dynamic testing of the race; conclusions come from code and config review.
+- I didn't check whether @tryghost/brute-knex does atomic increments; this conclusion is based on express-brute's documented read-then-write behavior.
+- Self-hosters can turn off staffDeviceVerification in their config, which would remove the second-factor protection.
+- I didn't test the race live; everything here comes from reviewing code and config.
+
+## My take
+This one mattered to me because it's the opposite of the other two deep dives. With vite and jsonwebtoken, the evidence pushed the priority down. Here the evidence held the rating where it was: the flaw is real, it's on the login page, and it can never be patched, only replaced. I think that balance is important. A good triage process should be able to say "this one is fine" and "this one is real" with the same level of proof.
